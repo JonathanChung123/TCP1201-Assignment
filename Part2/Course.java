@@ -8,13 +8,9 @@ public class Course {
     public Course(String courseName, Integer credit, ArrayList<Course> preRequisite){
         this.courseName = courseName;
         this.credit = credit;
-        this.preRequisite=preRequisite;
+        this.preRequisite = preRequisite;
         if (this.preRequisite == null) {
             this.preRequisite = new ArrayList<Course>();
         }
     }
-    public String toString(){
-        return courseName;
-    }
-    
 }

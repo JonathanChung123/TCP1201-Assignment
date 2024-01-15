@@ -123,6 +123,7 @@ public class CertificateProgram extends Application {
                         if (i == 0){
                             for(Lecturer login:lecturers){
                                 if (entry.getKey().equals(login.username)){
+                                    lec_login = login;
                                     showLecturerMenu(primaryStage);
                                     return;
                                 }
@@ -322,19 +323,47 @@ public class CertificateProgram extends Application {
 
     // Method to create a new course with a dialog box
     private void createCourse() {
-        // Create a text input dialog to get the course name
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Create Course");
-        dialog.setHeaderText(null);
-        dialog.setContentText("Enter course name:");
+        // Create a grid layout for the lecturer creation dialog
+        GridPane courseGrid = new GridPane();
+        courseGrid.setAlignment(Pos.CENTER);
+        courseGrid.setHgap(10);
+        courseGrid.setVgap(10);
+        courseGrid.setPadding(new Insets(25, 25, 25, 25));
 
-        // Wait for the user to enter a course name or click Cancel
-        String result = dialog.showAndWait().orElse(null);
+        // Course name input
+        Label courseLabel = new Label("Enter course name:");
+        TextField courseField = new TextField();
+        courseGrid.add(courseLabel, 0, 0);
+        courseGrid.add(courseField, 1, 0);
 
-        // Process the result if a course name is provided
-        if (result != null && !result.isEmpty()) {
-            // Retrieve the entered course name
-            String courseName = result;
+        // Credit input
+        Label creditLabel = new Label("Enter course credit:");
+        TextField creditField = new TextField();
+        courseGrid.add(creditLabel, 0, 1);
+        courseGrid.add(creditField, 1, 1);
+
+        // Pre-requisite input
+        Label prereqLabel = new Label("Course pre-requisite \n(empty if none, space if multiple):");
+        TextField prereqField = new TextField();
+        courseGrid.add(prereqLabel, 0, 2);
+        courseGrid.add(prereqField, 1, 2);
+
+
+        // Show the dialog
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Create Lecturer");
+        dialog.getDialogPane().setContent(courseGrid);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // Wait for the user to click OK or Cancel
+        Optional<ButtonType> result = dialog.showAndWait();
+
+        // Process the result if OK is clicked
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Retrieve the entered username and password
+            String courseName = courseField.getText().trim();
+            String credit = creditField.getText().trim();
+            String prereq = prereqField.getText().trim();
 
             // Check for duplicate course name
             if (isCourseNameExists(courseName)) {
@@ -342,10 +371,44 @@ public class CertificateProgram extends Application {
                 return;
             }
 
+            //check if credit is all integers
+            if (!isInteger(credit)){
+                showAlert("Error","Credit is not an integer value");
+                return;
+            }
+
+            ArrayList<Course> prereqlist = new ArrayList<>();
+            if(!prereq.isEmpty()){
+                //split the preRequisite if there's more than 1
+                String[] items = prereq.split(" ");
+                for(String i:items){
+                    if(!isCourseNameExists(i)){
+                        showAlert("Error", "Course doesn't exist, Pre-requisite course doesn't exist");
+                        return;
+                    }
+                }
+
+                for(String i:items){
+                    prereqlist.add(retrieveCourseData(i));
+                }
+            }
+
             // Add the new course to the list of courses
-            courses.add(new Course(courseName, 0, null));
+            courses.add(new Course(courseName, Integer.parseInt(credit),prereqlist));
             System.out.println("Course created successfully. CourseCode: " + courseName);
         }
+    }
+
+    public static boolean isInteger(String s) {
+        try { 
+            Integer.parseInt(s); 
+        } catch(NumberFormatException e) { 
+            return false; 
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
     }
 
     // Method to check if a course name already exists in the list of courses
@@ -464,6 +527,15 @@ public class CertificateProgram extends Application {
     public static Admin retrieveAdminData(String username){
         for (Admin x:admins){
             if(x.username.equals(username))
+                return x;
+        }
+        return null;
+    }
+
+    // use course name to find the class from Course
+    public static Course retrieveCourseData(String course){
+        for(Course x:courses){
+            if(x.courseName.equals(course))
                 return x;
         }
         return null;
@@ -669,7 +741,7 @@ public class CertificateProgram extends Application {
                 System.out.println("Course: " + courseName);
             } 
             else 
-                System.out.println("Course not found.");
+                showAlert("Error","Course not found.");
                 return;
             
         }

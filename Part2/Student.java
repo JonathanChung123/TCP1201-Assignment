@@ -27,8 +27,4 @@ public class Student extends User{
     public ArrayList<String> getCourses(){
         return currentCourses;
     }
-
-    public void deleteCourse(){
-        
-    }
 }
