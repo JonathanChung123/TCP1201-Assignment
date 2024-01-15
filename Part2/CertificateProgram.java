@@ -11,19 +11,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 // Main class representing the certificate program, extending Application
 public class CertificateProgram extends Application {
-    // Lists to store user and course information
-    //private List<User> users = new ArrayList<>();
-    private List<String> courses = new ArrayList<>();
 
     //Store classes
     private static HashSet<Lecturer> lecturers = new HashSet<Lecturer>();
     private static HashSet<Student> students = new HashSet<Student>();
     private static HashSet<Admin> admins = new HashSet<Admin>();
+    private static HashSet<Course> courses = new HashSet<Course>();
     
     //subdata: just to store username and password
     private static Map<String,String> lecturer_subdata = new HashMap<>();
@@ -346,15 +343,19 @@ public class CertificateProgram extends Application {
             }
 
             // Add the new course to the list of courses
-            courses.add(courseName);
+            courses.add(new Course(courseName, 0, null));
             System.out.println("Course created successfully. CourseCode: " + courseName);
         }
     }
 
     // Method to check if a course name already exists in the list of courses
     private boolean isCourseNameExists(String courseName) {
-        return courses.contains(courseName);
-    }
+        for(Course course:courses){
+            if (course.courseName.equals(courseName))
+                return true;
+        }
+        return false;
+    }  
 
     // Method to display an alert dialog with the given title and content
     private void showAlert(String title, String content) {
@@ -493,18 +494,18 @@ public class CertificateProgram extends Application {
         // Iterate through the list of students
         for(Student student:students){
             System.out.println("Student Username: " + student.username);
-            ArrayList<String> courses = student.getCourses();
+            ArrayList<String> viewCourses = student.getCourses();
 
             // Check if student has course assigned 
-            if(!courses.isEmpty()){
+            if(!viewCourses.isEmpty()){
                 System.out.print("  Assigned Course: ");
                 
                 //Iterate through lecturer's courses
-                for(String course:courses){
+                for(String course:viewCourses){
                     System.out.print(course + ", ");
                     
                 }
-                courses = new ArrayList<>();
+                viewCourses = new ArrayList<>();
                 System.out.println();
             }
 
@@ -512,19 +513,19 @@ public class CertificateProgram extends Application {
         // Iterate through the list of lecturers
         for(Lecturer lecturer:lecturers){
             System.out.println("Lecturer Username: " + lecturer.username);
-            courses = lecturer.getCourses();
+            ArrayList<String> viewCourses = lecturer.getCourses();
 
             // Check if lecturer has course assigned 
-            if(!courses.isEmpty()){
+            if(!viewCourses.isEmpty()){
                 System.out.print("  Assigned Course: ");
             
 
                 //Iterate through lecturer's courses
-                for(String course:courses){
+                for(String course:viewCourses){
                     System.out.print(course + ", ");
                     
                 }
-                courses = new ArrayList<>();
+                viewCourses = new ArrayList<>();
                 System.out.println();
             }
             
@@ -673,83 +674,4 @@ public class CertificateProgram extends Application {
             
         }
     }
-    
-
-
-    public static class User {
-        protected String username;
-        protected String password;
-        protected String userType;
-
-        User(String username, String password, String userType) {
-            this.username = username;
-            this.password = password;
-            this.userType = userType;
-        }
-    }
-
-
-        public static class Lecturer extends User{
-            protected String name;
-            protected ArrayList<String> courses = new ArrayList<>();
-        
-        
-            public Lecturer(String username, String password, String userType, 
-            String name, ArrayList<String> courses){
-                super(username,password,userType);
-                this.name = name;
-                this.courses = courses;
-                if (this.courses == null) {
-                    this.courses = new ArrayList<String>();
-                }
-            }
-        
-            public String getUsername(){
-                return username;
-            }
-    
-            public void addCourses(String course){
-                this.courses.add(course);
-            }
-    
-            public ArrayList<String> getCourses(){
-                return courses;
-            }
-        }
-
-        public static class Student extends User{
-            protected String name;
-            protected ArrayList<String> previousCourses;
-            protected ArrayList<String> currentCourses;
-    
-            public Student(String username, String password, String userType, String name, 
-            ArrayList<String> previousCourses, ArrayList<String> currentCourses){
-                super(username,password,userType);
-                this.name = name;
-                this.previousCourses = previousCourses;
-                this.currentCourses = currentCourses;
-                if (this.previousCourses == null) {
-                    this.previousCourses = new ArrayList<String>();
-                }
-                if (this.currentCourses == null) {
-                    this.currentCourses = new ArrayList<String>();
-                }
-    
-            }
-    
-            public void addCourses(String course){
-                currentCourses.add(course);
-            }
-    
-            public ArrayList<String> getCourses(){
-                return currentCourses;
-            }
-        }
-    
-        public static class Admin extends User{
-            public Admin(String username, String password, String userType){
-                super(username,password,userType);
-            }
-        }
-    
 }
