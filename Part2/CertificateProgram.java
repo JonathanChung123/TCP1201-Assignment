@@ -6,6 +6,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,11 +42,64 @@ public class CertificateProgram extends Application {
         launch(args);
     }
 
+
+    private static HashSet<Course> readCourseFromFile() {
+    String filename = "course.csv";
+    HashSet<Course> courses = new HashSet<Course>();
+    try {
+        // read students.csv into a list of lines.
+        List<String> lines = Files.readAllLines(Paths.get(filename));
+        for (int i = 0; i < lines.size(); i++) {
+        // split a line by comma
+        String[] items = lines.get(i).split(",");
+        
+        //Create a List with Type Course
+        ArrayList<Course> preReqCourseList = new ArrayList<>();
+        //If the pre-Requisite is not labeled as null
+        if(!(items[2].equals("null"))){
+            //course is a list that split at " " if there's multiple pre-Requisite
+            String[] course = items[2].split(" ");
+            Course preReqCourse = null; //basically will store the Course data that will be pre-Requisite for the current course
+            for(String courseName:course){
+
+                //get the Course class
+                for(Course x:courses){
+                    if(x.courseName.equals(courseName)){
+                        preReqCourse = x;
+                        break;
+                    }
+                }
+                //if fail to get Course data
+                if (preReqCourse == null){
+                    showAlert("Error","Data from course.csv is incorrect");
+                    return null;
+                }
+                //add the Course into the list of Pre-Requisite Courses
+                preReqCourseList.add(preReqCourse);
+            }
+        }
+        //add the course to courses
+        courses.add(new Course(items[0], Integer.parseInt(items[1]), preReqCourseList, Integer.parseInt(items[3])));
+    }
+    } catch (IOException ex) {
+        System.out.println(ex.getMessage());
+    }
+    return courses;
+}
+
+
     // Override method to define the initial stage (window) of the application
     // @Override
     public void start(Stage primaryStage) {
         // Set the title of the main stage
         primaryStage.setTitle("Registration System");
+
+        //initialization from csv files
+        
+        courses = readCourseFromFile();
+        if (courses.equals(null))
+            primaryStage.close();
+        System.out.println("Course data loaded");
 
         //initialization of all subdata
         loginData.add(lecturer_subdata);
@@ -348,6 +404,10 @@ public class CertificateProgram extends Application {
         courseGrid.add(prereqLabel, 0, 2);
         courseGrid.add(prereqField, 1, 2);
 
+        Label reqcreLabel = new Label("Credits required to register course:");
+        TextField reqcreField = new TextField();
+        courseGrid.add(reqcreLabel, 0, 3);
+        courseGrid.add(reqcreField, 1, 3);
 
         // Show the dialog
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -364,6 +424,7 @@ public class CertificateProgram extends Application {
             String courseName = courseField.getText().trim();
             String credit = creditField.getText().trim();
             String prereq = prereqField.getText().trim();
+            String reqcre = reqcreField.getText().trim();
 
             // Check for duplicate course name
             if (isCourseNameExists(courseName)) {
@@ -394,7 +455,7 @@ public class CertificateProgram extends Application {
             }
 
             // Add the new course to the list of courses
-            courses.add(new Course(courseName, Integer.parseInt(credit),prereqlist));
+            courses.add(new Course(courseName, Integer.parseInt(credit),prereqlist,Integer.parseInt(reqcre)));
             System.out.println("Course created successfully. CourseCode: " + courseName);
         }
     }
@@ -421,7 +482,7 @@ public class CertificateProgram extends Application {
     }  
 
     // Method to display an alert dialog with the given title and content
-    private void showAlert(String title, String content) {
+    private static void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -486,14 +547,14 @@ public class CertificateProgram extends Application {
                 
                 //check if lecturer already has the course
                 Lecturer selected_lec = retrieveLecturerData(lecturer);
-                if(selected_lec.getCourses().contains(selectedCourse)){
+                if(selected_lec.getCourses().contains(retrieveCourseData(selectedCourse))){
                     showAlert("Error", "Lecturer is already assigned to course");
                     return;
                 }
 
 
                 // Assign the course to the lecturer
-                selected_lec.addCourses(selectedCourse);
+                selected_lec.addCourses(retrieveCourseData(selectedCourse));
                 System.out.println("Course assigned to lecturer successfully.");
                 System.out.println("Lecturer: " + lecturer);
                 System.out.println("Course: " + courseName);
@@ -566,15 +627,15 @@ public class CertificateProgram extends Application {
         // Iterate through the list of students
         for(Student student:students){
             System.out.println("Student Username: " + student.username);
-            ArrayList<String> viewCourses = student.getCourses();
+            ArrayList<Course> viewCourses = student.getCourses();
 
             // Check if student has course assigned 
             if(!viewCourses.isEmpty()){
                 System.out.print("  Assigned Course: ");
                 
                 //Iterate through lecturer's courses
-                for(String course:viewCourses){
-                    System.out.print(course + ", ");
+                for(Course course:viewCourses){
+                    System.out.print(course.courseName + ", ");
                     
                 }
                 viewCourses = new ArrayList<>();
@@ -585,7 +646,7 @@ public class CertificateProgram extends Application {
         // Iterate through the list of lecturers
         for(Lecturer lecturer:lecturers){
             System.out.println("Lecturer Username: " + lecturer.username);
-            ArrayList<String> viewCourses = lecturer.getCourses();
+            ArrayList<Course> viewCourses = lecturer.getCourses();
 
             // Check if lecturer has course assigned 
             if(!viewCourses.isEmpty()){
@@ -593,8 +654,8 @@ public class CertificateProgram extends Application {
             
 
                 //Iterate through lecturer's courses
-                for(String course:viewCourses){
-                    System.out.print(course + ", ");
+                for(Course course:viewCourses){
+                    System.out.print(course.courseName + ", ");
                     
                 }
                 viewCourses = new ArrayList<>();
@@ -642,15 +703,15 @@ public class CertificateProgram extends Application {
         // Iterate through the list of students
         for(Student student:students){
             System.out.println("Student Username: " + student.username);
-            ArrayList<String> courses = student.getCourses();
+            ArrayList<Course> courses = student.getCourses();
 
             // Check if student has course assigned 
             if(!courses.isEmpty()){
                 System.out.print("  Assigned Course: ");
                 
                 //Iterate through lecturer's courses
-                for(String course:courses){
-                    System.out.print(course + ", ");
+                for(Course course:courses){
+                    System.out.print(course.courseName + ", ");
                     
                 }
                 courses = new ArrayList<>();
@@ -730,13 +791,13 @@ public class CertificateProgram extends Application {
 
             if (selectedCourse != null) {
                 //check if student already has the course
-                if(stu_login.getCourses().contains(selectedCourse)){
+                if(stu_login.getCourses().contains(retrieveCourseData(selectedCourse))){
                     showAlert("Error", "Student is already assigned to course");
                     return;
                 }
 
                 // Assign the course to the student
-                stu_login.addCourses(selectedCourse);
+                stu_login.addCourses(retrieveCourseData(selectedCourse));
                 System.out.println("Course assigned to student successfully.");
                 System.out.println("Course: " + courseName);
             } 

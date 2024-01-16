@@ -3,16 +3,16 @@ import java.util.ArrayList;
 public class Lecturer extends User{
 
     protected String name;
-    protected ArrayList<String> courses = new ArrayList<>();
+    protected ArrayList<Course> courses = new ArrayList<>();
 
 
     public Lecturer(String username, String password, String userType, 
-    String name, ArrayList<String> courses){
+    String name, ArrayList<Course> courses){
         super(username,password,userType);
         this.name = name;
         this.courses = courses;
         if (this.courses == null) {
-            this.courses = new ArrayList<String>();
+            this.courses = new ArrayList<Course>();
         }
     }
 
@@ -20,11 +20,11 @@ public class Lecturer extends User{
         return username;
     }
 
-    public void addCourses(String course){
+    public void addCourses(Course course){
         this.courses.add(course);
     }
 
-    public ArrayList<String> getCourses(){
+    public ArrayList<Course> getCourses(){
         return courses;
     }
 }
