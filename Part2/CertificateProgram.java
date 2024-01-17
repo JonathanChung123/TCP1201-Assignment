@@ -38,10 +38,27 @@ public class CertificateProgram extends Application {
 
     // Main method to launch the JavaFX application
     public static void main(String[] args) {
-        
         launch(args);
     }
 
+    private static HashSet<Admin> readAdminFromFile() {
+        String filename = "admins.csv";
+        HashSet<Admin> admins = new HashSet<Admin>();
+        try {
+            // read students.csv into a list of lines.
+            List<String> lines = Files.readAllLines(Paths.get(filename));
+            for (int i = 0; i < lines.size(); i++) {
+            // split a line by comma
+            String[] items = lines.get(i).split(",");
+    
+            //add the course to courses
+            admins.add(new Admin(items[0], items[1], "admin"));
+        }
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return admins;
+    }
 
     private static HashSet<Course> readCourseFromFile() {
     String filename = "course.csv";
@@ -88,6 +105,7 @@ public class CertificateProgram extends Application {
 }
 
 
+
     // Override method to define the initial stage (window) of the application
     // @Override
     public void start(Stage primaryStage) {
@@ -96,9 +114,13 @@ public class CertificateProgram extends Application {
 
         //initialization from csv files
         
+        admins = readAdminFromFile();
         courses = readCourseFromFile();
+        
         if (courses.equals(null))
             primaryStage.close();
+
+        System.out.println("Admin data loaded");
         System.out.println("Course data loaded");
 
         //initialization of all subdata
