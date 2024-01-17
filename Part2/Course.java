@@ -15,4 +15,12 @@ public class Course {
         }
         this.reqCredit = reqCredit;
     }
+
+    public String toCSVString(){
+        ArrayList<String> c = new ArrayList<>();
+        for(Course course:preRequisiteCourse)
+            c.add(course.courseName);
+        String listString = String.join(" ", c);
+        return courseName + "," + credit + "," + listString + "," + reqCredit;
+    }
 }

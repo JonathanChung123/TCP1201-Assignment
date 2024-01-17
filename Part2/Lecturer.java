@@ -27,4 +27,12 @@ public class Lecturer extends User{
     public ArrayList<Course> getCourses(){
         return courses;
     }
+
+    public String toCSVString(){
+        ArrayList<String> c = new ArrayList<>();
+        for(Course course:courses)
+            c.add(course.courseName);
+        String listString = String.join(" ", c);
+        return username + "," + password + "," + name + "," + listString;
+    }
 }
