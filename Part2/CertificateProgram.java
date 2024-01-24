@@ -497,6 +497,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
             // Add the new lecturer to the list of users
             lecturers.add(new Lecturer(username, password, "lecturer","",null));
             lecturer_subdata.put(username,password);
+            saveLecturerToFile(lecturers);
             System.out.println("Lecturer created successfully. Lecturer Username: " + username);
         }
     }
@@ -589,6 +590,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
 
             // Add the new course to the list of courses
             courses.add(new Course(courseName, Integer.parseInt(credit),prereqlist,Integer.parseInt(reqcre)));
+            saveCourseToFile(courses);
             System.out.println("Course created successfully. CourseCode: " + courseName);
         }
     }
@@ -688,6 +690,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
 
                 // Assign the course to the lecturer
                 selected_lec.addCourses(retrieveCourseData(selectedCourse));
+                saveLecturerToFile(lecturers);
                 System.out.println("Course assigned to lecturer successfully.");
                 System.out.println("Lecturer: " + lecturer);
                 System.out.println("Course: " + courseName);
@@ -949,6 +952,30 @@ private static LinkedHashSet<Student> readStudentFromFile() {
             sb.append(student.toCSVString() + "\n");
         try {
             Files.write(Paths.get("students.csv"), sb.toString().getBytes());
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private static void saveLecturerToFile(LinkedHashSet<Lecturer> lecturers) {
+        // read lecturers.csv into a list of lines.
+        StringBuilder sb = new StringBuilder();
+        for (Lecturer lecturer:lecturers)
+            sb.append(lecturer.toCSVString() + "\n");
+        try {
+            Files.write(Paths.get("lecturers.csv"), sb.toString().getBytes());
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private static void saveCourseToFile(LinkedHashSet<Course> courses) {
+        // read courses.csv into a list of lines.
+        StringBuilder sb = new StringBuilder();
+        for (Course course:courses)
+            sb.append(course.toCSVString() + "\n");
+        try {
+            Files.write(Paths.get("courses.csv"), sb.toString().getBytes());
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
