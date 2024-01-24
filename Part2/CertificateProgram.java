@@ -442,6 +442,7 @@ private static HashSet<Student> readStudentFromFile() {
             // Add the new student to the list of users
             students.add(new Student(username, password, "Student", "", null, null));
             student_subdata.put(username,password);
+            saveStudentToFile(students);
             System.out.println("Student created successfully. Student Username: " + username);
         }
     }
@@ -767,7 +768,7 @@ private static HashSet<Student> readStudentFromFile() {
                 
                 //Iterate through lecturer's courses
                 for(Course course:viewCourses){
-                    System.out.print(course.courseName + ", ");
+                    System.out.print(course.courseName + " ");
                     
                 }
                 viewCourses = new ArrayList<>();
@@ -787,7 +788,7 @@ private static HashSet<Student> readStudentFromFile() {
 
                 //Iterate through lecturer's courses
                 for(Course course:viewCourses){
-                    System.out.print(course.courseName + ", ");
+                    System.out.print(course.courseName + " ");
                     
                 }
                 viewCourses = new ArrayList<>();
@@ -843,7 +844,7 @@ private static HashSet<Student> readStudentFromFile() {
                 
                 //Iterate through lecturer's courses
                 for(Course course:courses){
-                    System.out.print(course.courseName + ", ");
+                    System.out.print(course.courseName + " ");
                     
                 }
                 courses = new ArrayList<>();
@@ -930,6 +931,7 @@ private static HashSet<Student> readStudentFromFile() {
 
                 // Assign the course to the student
                 stu_login.addCourses(retrieveCourseData(selectedCourse));
+                saveStudentToFile(students);
                 System.out.println("Course assigned to student successfully.");
                 System.out.println("Course: " + courseName);
             } 
@@ -937,6 +939,18 @@ private static HashSet<Student> readStudentFromFile() {
                 showAlert("Error","Course not found.");
                 return;
             
+        }
+    }
+
+    private static void saveStudentToFile(HashSet<Student> students) {
+        // read students.csv into a list of lines.
+        StringBuilder sb = new StringBuilder();
+        for (Student student:students)
+            sb.append(student.toCSVString() + "\n");
+        try {
+            Files.write(Paths.get("students.csv"), sb.toString().getBytes());
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 }
