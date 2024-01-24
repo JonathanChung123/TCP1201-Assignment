@@ -38,6 +38,17 @@ public class CertificateProgram extends Application {
 
     // Main method to launch the JavaFX application
     public static void main(String[] args) {
+        //initialization from csv files
+        admins = readAdminFromFile();
+        courses = readCourseFromFile();
+        lecturers = readLecturerFromFile();
+        students = readStudentFromFile();
+
+        //initialization of all subdata
+        loginData.add(lecturer_subdata);
+        loginData.add(student_subdata);
+        loginData.add(admin_subdata);
+
         launch(args);
     }
 
@@ -45,14 +56,15 @@ public class CertificateProgram extends Application {
         String filename = "admins.csv";
         HashSet<Admin> admins = new HashSet<Admin>();
         try {
-            // read students.csv into a list of lines.
+            // read admin.csv into a list of lines.
             List<String> lines = Files.readAllLines(Paths.get(filename));
             for (int i = 0; i < lines.size(); i++) {
             // split a line by comma
             String[] items = lines.get(i).split(",");
     
-            //add the course to courses
+            //add the admin to admins
             admins.add(new Admin(items[0], items[1], "admin"));
+            admin_subdata.put(items[0],items[1]);
         }
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -61,7 +73,7 @@ public class CertificateProgram extends Application {
     }
 
     private static HashSet<Course> readCourseFromFile() {
-    String filename = "course.csv";
+    String filename = "courses.csv";
     HashSet<Course> courses = new HashSet<Course>();
     try {
         // read students.csv into a list of lines.
@@ -88,10 +100,11 @@ public class CertificateProgram extends Application {
                 }
                 //if fail to get Course data
                 if (preReqCourse == null){
-                    showAlert("Error","Data from course.csv is incorrect");
                     return null;
                 }
+
                 //add the Course into the list of Pre-Requisite Courses
+                
                 preReqCourseList.add(preReqCourse);
             }
         }
@@ -104,7 +117,119 @@ public class CertificateProgram extends Application {
     return courses;
 }
 
+private static HashSet<Lecturer> readLecturerFromFile() {
+    String filename = "lecturers.csv";
+    HashSet<Lecturer> lecturers = new HashSet<Lecturer>();
+    try {
+        // read students.csv into a list of lines.
+        List<String> lines = Files.readAllLines(Paths.get(filename));
+        for (int i = 0; i < lines.size(); i++) {
+        // split a line by comma
+        String[] items = lines.get(i).split(",");
 
+        //Create a List with Type Course
+        ArrayList<Course> CourseList = new ArrayList<>();
+        //If the course is not labeled as null
+        if(!(items[3].equals("null"))){
+            //course is a list that split at " " if there's multiple courses
+            String[] course = items[3].split(" ");
+            Course lecCourse = null; //basically will store the Course data that the lecturer has
+            for(String courseName:course){
+
+                //get the Course class
+                for(Course x:courses){
+                    if(x.courseName.equals(courseName)){
+                        lecCourse = x;
+                        break;
+                    }
+                }
+                //if fail to get Course data
+                if (lecCourse == null){
+                    return null;
+                }
+                //add the Course into the list of Pre-Requisite Courses
+                CourseList.add(lecCourse);
+            }
+        }
+        //add the lecturer to lecturers
+        lecturers.add(new Lecturer(items[0], items[1], "lecturer", items[2], CourseList));
+        lecturer_subdata.put(items[0], items[1]);
+    }
+    } catch (IOException ex) {
+        System.out.println(ex.getMessage());
+    }
+    return lecturers;
+}
+
+private static HashSet<Student> readStudentFromFile() {
+    String filename = "students.csv";
+    HashSet<Student> students = new HashSet<Student>();
+    try {
+        // read students.csv into a list of lines.
+        List<String> lines = Files.readAllLines(Paths.get(filename));
+        for (int i = 0; i < lines.size(); i++) {
+        // split a line by comma
+        String[] items = lines.get(i).split(",");
+
+        //Create a List with Type Course
+        ArrayList<Course> preCourseList = new ArrayList<>();
+        //If the course is not labeled as null
+        if(!(items[3].equals("null"))){
+            //course is a list that split at " " if there's multiple courses
+            String[] course = items[3].split(" ");
+            Course preCourse = null; //basically will store the Course data that the lecturer has
+            for(String courseName:course){
+
+                //get the Course class
+                for(Course x:courses){
+                    if(x.courseName.equals(courseName)){
+                        preCourse = x;
+                        break;
+                    }
+                }
+                //if fail to get Course data
+                if (preCourse == null){
+                    return null;
+                }
+                //add the Course into the list of Pre-Requisite Courses
+                preCourseList.add(preCourse);
+            }
+        }
+
+        //Create a List with Type Course
+        ArrayList<Course> currCourseList = new ArrayList<>();
+        //If the course is not labeled as null
+        if(!(items[4].equals("null"))){
+            //course is a list that split at " " if there's multiple courses
+            String[] course = items[4].split(" ");
+            Course currCourse = null; //basically will store the Course data that the lecturer has
+            for(String courseName:course){
+
+                //get the Course class
+                for(Course x:courses){
+                    if(x.courseName.equals(courseName)){
+                        currCourse = x;
+                        break;
+                    }
+                }
+                //if fail to get Course data
+                if (currCourse == null){
+                    return null;
+                }
+                //add the Course into the list of Pre-Requisite Courses
+                currCourseList.add(currCourse);
+            }
+        }
+
+        //add the lecturer to lecturers
+        students.add(new Student(items[0], items[1], "student", items[2], preCourseList, currCourseList));
+        student_subdata.put(items[0], items[1]);
+    }
+    } catch (IOException ex) {
+        System.out.println(ex.getMessage());
+    }
+    return students;
+}
 
     // Override method to define the initial stage (window) of the application
     // @Override
@@ -112,26 +237,11 @@ public class CertificateProgram extends Application {
         // Set the title of the main stage
         primaryStage.setTitle("Registration System");
 
-        //initialization from csv files
-        
-        admins = readAdminFromFile();
-        courses = readCourseFromFile();
-        
-        if (courses.equals(null))
-            primaryStage.close();
-
-        System.out.println("Admin data loaded");
-        System.out.println("Course data loaded");
-
-        //initialization of all subdata
-        loginData.add(lecturer_subdata);
-        loginData.add(student_subdata);
-        loginData.add(admin_subdata);
-
-        // Create an admin user and add it to the list of users
-        Admin admin = new Admin("admin", "admin123", "admin");
-        admin_subdata.put("admin","admin123");
-        admins.add(admin);
+        // if any of the csv files have invalid data, end the program
+        if (courses == null || lecturers == null || students == null){
+            showAlert("Error","Data from csv file is incorrect");
+            return;
+        }
 
         // Create the main grid layout for the login screen
         GridPane grid = new GridPane();

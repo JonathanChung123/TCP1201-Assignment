@@ -21,6 +21,8 @@ public class Course {
         for(Course course:preRequisiteCourse)
             c.add(course.courseName);
         String listString = String.join(" ", c);
+        if (c.isEmpty())
+            listString = "null";
         return courseName + "," + credit + "," + listString + "," + reqCredit;
     }
 }

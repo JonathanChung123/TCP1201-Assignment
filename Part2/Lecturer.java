@@ -33,6 +33,8 @@ public class Lecturer extends User{
         for(Course course:courses)
             c.add(course.courseName);
         String listString = String.join(" ", c);
+        if(c.isEmpty())
+            listString = "null";
         return username + "," + password + "," + name + "," + listString;
     }
 }

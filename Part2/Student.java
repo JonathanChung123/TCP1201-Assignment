@@ -36,17 +36,21 @@ public class Student extends User{
             totalCredit +=course.credit;
         return totalCredit;
     }
-
+    
     public String toCSVString(){
         ArrayList<String> c1 = new ArrayList<>();
         for(Course course:previousCourses)
             c1.add(course.courseName);
         String listString1 = String.join(" ", c1);
+        if (c1.isEmpty())
+        listString1 = "null";
 
         ArrayList<String> c2 = new ArrayList<>();
         for(Course course:currentCourses)
             c2.add(course.courseName);
         String listString2 = String.join(" ", c2);
+        if (c2.isEmpty())
+            listString2 = "null";
         return username + "," + password + "," + name + "," + listString1 + "," + listString2;
     }
 }

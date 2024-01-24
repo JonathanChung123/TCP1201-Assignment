@@ -3,6 +3,10 @@ public class Admin extends User{
         super(username,password,userType);
     }
 
+    public String toString(){
+        return username + ", " + password + ", " + userType;
+    }
+
     public String toCSVString(){
         return username + "," + password;
     }
