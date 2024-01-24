@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,10 +20,10 @@ import java.util.Optional;
 public class CertificateProgram extends Application {
 
     //Store classes
-    private static HashSet<Lecturer> lecturers = new HashSet<Lecturer>();
-    private static HashSet<Student> students = new HashSet<Student>();
-    private static HashSet<Admin> admins = new HashSet<Admin>();
-    private static HashSet<Course> courses = new HashSet<Course>();
+    private static LinkedHashSet<Lecturer> lecturers = new LinkedHashSet<Lecturer>();
+    private static LinkedHashSet<Student> students = new LinkedHashSet<Student>();
+    private static LinkedHashSet<Admin> admins = new LinkedHashSet<Admin>();
+    private static LinkedHashSet<Course> courses = new LinkedHashSet<Course>();
     
     //subdata: just to store username and password
     private static Map<String,String> lecturer_subdata = new HashMap<>();
@@ -52,9 +52,9 @@ public class CertificateProgram extends Application {
         launch(args);
     }
 
-    private static HashSet<Admin> readAdminFromFile() {
+    private static LinkedHashSet<Admin> readAdminFromFile() {
         String filename = "admins.csv";
-        HashSet<Admin> admins = new HashSet<Admin>();
+        LinkedHashSet<Admin> admins = new LinkedHashSet<Admin>();
         try {
             // read admin.csv into a list of lines.
             List<String> lines = Files.readAllLines(Paths.get(filename));
@@ -72,9 +72,9 @@ public class CertificateProgram extends Application {
         return admins;
     }
 
-    private static HashSet<Course> readCourseFromFile() {
+    private static LinkedHashSet<Course> readCourseFromFile() {
     String filename = "courses.csv";
-    HashSet<Course> courses = new HashSet<Course>();
+    LinkedHashSet<Course> courses = new LinkedHashSet<Course>();
     try {
         // read students.csv into a list of lines.
         List<String> lines = Files.readAllLines(Paths.get(filename));
@@ -117,9 +117,9 @@ public class CertificateProgram extends Application {
     return courses;
 }
 
-private static HashSet<Lecturer> readLecturerFromFile() {
+private static LinkedHashSet<Lecturer> readLecturerFromFile() {
     String filename = "lecturers.csv";
-    HashSet<Lecturer> lecturers = new HashSet<Lecturer>();
+    LinkedHashSet<Lecturer> lecturers = new LinkedHashSet<Lecturer>();
     try {
         // read students.csv into a list of lines.
         List<String> lines = Files.readAllLines(Paths.get(filename));
@@ -161,9 +161,9 @@ private static HashSet<Lecturer> readLecturerFromFile() {
     return lecturers;
 }
 
-private static HashSet<Student> readStudentFromFile() {
+private static LinkedHashSet<Student> readStudentFromFile() {
     String filename = "students.csv";
-    HashSet<Student> students = new HashSet<Student>();
+    LinkedHashSet<Student> students = new LinkedHashSet<Student>();
     try {
         // read students.csv into a list of lines.
         List<String> lines = Files.readAllLines(Paths.get(filename));
@@ -942,7 +942,7 @@ private static HashSet<Student> readStudentFromFile() {
         }
     }
 
-    private static void saveStudentToFile(HashSet<Student> students) {
+    private static void saveStudentToFile(LinkedHashSet<Student> students) {
         // read students.csv into a list of lines.
         StringBuilder sb = new StringBuilder();
         for (Student student:students)
