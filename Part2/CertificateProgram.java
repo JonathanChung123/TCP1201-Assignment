@@ -413,6 +413,8 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         studentGrid.add(passwordLabel, 0, 1);
         studentGrid.add(passwordField, 1, 1);
 
+
+        
         // Create a dialog box for student creation
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Create Student");
