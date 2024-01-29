@@ -32,8 +32,6 @@ public class Student extends User{
         Integer totalCredit = 0;
         for(Course course:currentCourses)
             totalCredit += course.credit;
-        for(Course course:previousCourses)
-            totalCredit +=course.credit;
         return totalCredit;
     }
     
