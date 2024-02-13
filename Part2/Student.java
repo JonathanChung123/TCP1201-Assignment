@@ -24,11 +24,22 @@ public class Student extends User{
         currentCourses.add(course);
     }
 
-    public ArrayList<Course> getCourses(){
+    public ArrayList<Course> getCurrentCourses(){
         return currentCourses;
     }
 
-    public Integer totalCredit(){
+    public ArrayList<Course> getPrevCourses(){
+        return previousCourses;
+    }
+
+    public Integer getTotalPrevCredit(){
+        Integer totalCredit = 0;
+        for(Course course:previousCourses)
+            totalCredit += course.credit;
+        return totalCredit;
+    }
+
+    public Integer getTotalCurrentCredit(){
         Integer totalCredit = 0;
         for(Course course:currentCourses)
             totalCredit += course.credit;

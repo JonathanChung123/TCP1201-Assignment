@@ -765,7 +765,8 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         // Iterate through the list of students
         for(Student student:students){
             System.out.println("Student Username: " + student.username);
-            ArrayList<Course> viewCourses = student.getCourses();
+            System.out.println("Student Name: " + student.name);
+            ArrayList<Course> viewCourses = student.getCurrentCourses();
 
             // Check if student has course assigned 
             if(!viewCourses.isEmpty()){
@@ -784,6 +785,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         // Iterate through the list of lecturers
         for(Lecturer lecturer:lecturers){
             System.out.println("Lecturer Username: " + lecturer.username);
+            System.out.println("Lecturer Name: " + lecturer.name);
             ArrayList<Course> viewCourses = lecturer.getCourses();
 
             // Check if lecturer has course assigned 
@@ -841,7 +843,8 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         // Iterate through the list of students
         for(Student student:students){
             System.out.println("Student Username: " + student.username);
-            ArrayList<Course> courses = student.getCourses();
+            System.out.println("Student Name: " + student.name);
+            ArrayList<Course> courses = student.getCurrentCourses();
 
             // Check if student has course assigned 
             if(!courses.isEmpty()){
@@ -929,10 +932,35 @@ private static LinkedHashSet<Student> readStudentFromFile() {
 
             if (selectedCourse != null) {
                 //check if student already has the course
-                if(stu_login.getCourses().contains(retrieveCourseData(selectedCourse))){
-                    showAlert("Error", "Student is already assigned to course");
+                if(stu_login.getCurrentCourses().contains(retrieveCourseData(selectedCourse))
+                || stu_login.getPrevCourses().contains(retrieveCourseData(selectedCourse))){
+                    showAlert("Error", "Course already has been assigned to student");
                     return;
                 }
+
+                //check if it is the maximum credit for the course
+                if((stu_login.getTotalCurrentCredit() + retrieveCourseData(selectedCourse).credit) > 12){
+                    showAlert("Error", "Exceed maximum credit for trimester");
+                    return;
+                }
+
+                //check if there is course with required credit
+                if(retrieveCourseData(selectedCourse).reqCredit > stu_login.getTotalPrevCredit()){
+                    showAlert("Error", "Required Credit not met");
+                    return;
+                }
+
+                //check does the course has the pre-requisite courses
+                ArrayList<Course> list = retrieveCourseData(selectedCourse).preRequisiteCourse;
+                for(Course course:list){
+                    if(stu_login.getPrevCourses().contains(course))
+                        continue;
+                    else{
+                        showAlert("Error", "Required Pre-requisite subject not met");
+                        return;
+                    }
+                }
+                
 
                 // Assign the course to the student
                 stu_login.addCourses(retrieveCourseData(selectedCourse));
