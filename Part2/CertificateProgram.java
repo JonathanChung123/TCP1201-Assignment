@@ -93,7 +93,7 @@ public class CertificateProgram extends Application {
 
                 //get the Course class
                 for(Course x:courses){
-                    if(x.courseName.equals(courseName)){
+                    if(x.getCourseName().equals(courseName)){
                         preReqCourse = x;
                         break;
                     }
@@ -138,7 +138,7 @@ private static LinkedHashSet<Lecturer> readLecturerFromFile() {
 
                 //get the Course class
                 for(Course x:courses){
-                    if(x.courseName.equals(courseName)){
+                    if(x.getCourseName().equals(courseName)){
                         lecCourse = x;
                         break;
                     }
@@ -182,7 +182,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
 
                 //get the Course class
                 for(Course x:courses){
-                    if(x.courseName.equals(courseName)){
+                    if(x.getCourseName().equals(courseName)){
                         preCourse = x;
                         break;
                     }
@@ -207,7 +207,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
 
                 //get the Course class
                 for(Course x:courses){
-                    if(x.courseName.equals(courseName)){
+                    if(x.getCourseName().equals(courseName)){
                         currCourse = x;
                         break;
                     }
@@ -310,7 +310,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
                     if(entry.getKey().equals(username) && entry.getValue().equals(password)){
                         if (i == 0){
                             for(Lecturer login:lecturers){
-                                if (entry.getKey().equals(login.username)){
+                                if (entry.getKey().equals(login.getUsername())){
                                     lec_login = login;
                                     showLecturerMenu(primaryStage);
                                     return;
@@ -319,7 +319,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
                         }
                         else if (i == 1){
                             for(Student login:students){
-                                if (entry.getKey().equals(login.username)){
+                                if (entry.getKey().equals(login.getUsername())){
                                     stu_login = login;
                                     showStudentMenu(primaryStage);
                                     return;
@@ -328,7 +328,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
                         }
                         else{
                             for(Admin login:admins){
-                                if (entry.getKey().equals(login.username)){
+                                if (entry.getKey().equals(login.getUsername())){
                                     admin_login = login;
                                     showAdminMenu(primaryStage);
                                     return;
@@ -612,7 +612,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
     // Method to check if a course name already exists in the list of courses
     private boolean isCourseNameExists(String courseName) {
         for(Course course:courses){
-            if (course.courseName.equals(courseName))
+            if (course.getCourseName().equals(courseName))
                 return true;
         }
         return false;
@@ -707,7 +707,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
     // use username to find the class from Student (didn't use, might use)
     public static Student retrieveStudentData(String username){
         for (Student x:students){
-            if(x.username.equals(username))
+            if(x.getUsername().equals(username))
                 return x;
         }
         return null;
@@ -716,7 +716,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
     // use username to find the class from Lecturer
     public static Lecturer retrieveLecturerData(String username){
         for (Lecturer x:lecturers){
-            if(x.username.equals(username))
+            if(x.getUsername().equals(username))
                 return x;
         }
         return null;
@@ -725,7 +725,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
     // use username to find the class from Admin (didn't use, might use)
     public static Admin retrieveAdminData(String username){
         for (Admin x:admins){
-            if(x.username.equals(username))
+            if(x.getUsername().equals(username))
                 return x;
         }
         return null;
@@ -734,7 +734,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
     // use course name to find the class from Course
     public static Course retrieveCourseData(String course){
         for(Course x:courses){
-            if(x.courseName.equals(course))
+            if(x.getCourseName().equals(course))
                 return x;
         }
         return null;
@@ -764,7 +764,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
 
         // Iterate through the list of students
         for(Student student:students){
-            System.out.println("Student Username: " + student.username);
+            System.out.println("Student Username: " + student.getUsername());
             System.out.println("Student Name: " + student.getName());
             ArrayList<Course> viewCourses = student.getCurrentCourses();
 
@@ -774,7 +774,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
                 
                 //Iterate through lecturer's courses
                 for(Course course:viewCourses){
-                    System.out.print(course.courseName + " ");
+                    System.out.print(course.getCourseName() + " ");
                     
                 }
                 viewCourses = new ArrayList<>();
@@ -784,8 +784,8 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         }
         // Iterate through the list of lecturers
         for(Lecturer lecturer:lecturers){
-            System.out.println("Lecturer Username: " + lecturer.username);
-            System.out.println("Lecturer Name: " + lecturer.name);
+            System.out.println("Lecturer Username: " + lecturer.getUsername());
+            System.out.println("Lecturer Name: " + lecturer.getName());
             ArrayList<Course> viewCourses = lecturer.getCourses();
 
             // Check if lecturer has course assigned 
@@ -795,7 +795,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
 
                 //Iterate through lecturer's courses
                 for(Course course:viewCourses){
-                    System.out.print(course.courseName + " ");
+                    System.out.print(course.getCourseName() + " ");
                     
                 }
                 viewCourses = new ArrayList<>();
@@ -842,7 +842,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
 
         // Iterate through the list of students
         for(Student student:students){
-            System.out.println("Student Username: " + student.username);
+            System.out.println("Student Username: " + student.getUsername());
             System.out.println("Student Name: " + student.getName());
             ArrayList<Course> courses = student.getCurrentCourses();
 
@@ -852,7 +852,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
                 
                 //Iterate through lecturer's courses
                 for(Course course:courses){
-                    System.out.print(course.courseName + " ");
+                    System.out.print(course.getCourseName() + " ");
                     
                 }
                 courses = new ArrayList<>();
@@ -952,21 +952,21 @@ private static LinkedHashSet<Student> readStudentFromFile() {
                 }
 
                 //check if it is the maximum credit for the course
-                if((stu_login.getTotalCurrentCredit() + retrieveCourseData(selectedCourse).credit) > 12){
+                if((stu_login.getTotalCurrentCredit() + retrieveCourseData(selectedCourse).getCredit()) > 12){
                     showAlert("Error", "Exceed maximum credit for trimester");
                     assignStudentCourse();
                     return;
                 }
 
                 //check if there is course with required credit
-                if(retrieveCourseData(selectedCourse).reqCredit > stu_login.getTotalPrevCredit()){
+                if(retrieveCourseData(selectedCourse).getReqCredit() > stu_login.getTotalPrevCredit()){
                     showAlert("Error", "Required Credit not met");
                     assignStudentCourse();
                     return;
                 }
 
                 //check does the course has the pre-requisite courses
-                ArrayList<Course> list = retrieveCourseData(selectedCourse).preRequisiteCourse;
+                ArrayList<Course> list = retrieveCourseData(selectedCourse).getPreRequisiteCourse();
                 for(Course course:list){
                     if(stu_login.getPrevCourses().contains(course))
                         continue;

@@ -9,22 +9,22 @@ public class Course {
     /**
      * Represents the name of the course
      */
-    protected String courseName;
+    private String courseName;
 
     /**
      * Represents the credit of the course
      */
-    protected Integer credit;
+    private Integer credit;
 
     /**
      * Represents the pre-requisite courses of the course
      */
-    protected ArrayList<Course> preRequisiteCourse;
+    private ArrayList<Course> preRequisiteCourse;
 
     /**
      * Represents the credit required to take the course
      */
-    protected Integer reqCredit;
+    private Integer reqCredit;
 
     /**
      * The constructor initializes the course's information
@@ -41,6 +41,22 @@ public class Course {
             this.preRequisiteCourse = new ArrayList<Course>();
         }
         this.reqCredit = reqCredit;
+    }
+
+    public String getCourseName(){
+        return courseName;
+    }
+
+    public Integer getCredit(){
+        return credit;
+    }
+
+    public ArrayList<Course> getPreRequisiteCourse(){
+        return preRequisiteCourse;
+    }
+
+    public Integer getReqCredit(){
+        return reqCredit;
     }
 
     /**

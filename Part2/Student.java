@@ -78,7 +78,7 @@ public class Student extends User{
     public Integer getTotalPrevCredit(){
         Integer totalCredit = 0;
         for(Course course:previousCourses)
-            totalCredit += course.credit;
+            totalCredit += course.getCredit();
         return totalCredit;
     }
 
@@ -89,7 +89,7 @@ public class Student extends User{
     public Integer getTotalCurrentCredit(){
         Integer totalCredit = 0;
         for(Course course:currentCourses)
-            totalCredit += course.credit;
+            totalCredit += course.getCredit();
         return totalCredit;
     }
     
@@ -101,17 +101,17 @@ public class Student extends User{
     public String toCSVString(){
         ArrayList<String> c1 = new ArrayList<>();
         for(Course course:previousCourses)
-            c1.add(course.courseName);
+            c1.add(course.getCourseName());
         String listString1 = String.join(" ", c1);
         if (c1.isEmpty())
         listString1 = "null";
 
         ArrayList<String> c2 = new ArrayList<>();
         for(Course course:currentCourses)
-            c2.add(course.courseName);
+            c2.add(course.getCourseName());
         String listString2 = String.join(" ", c2);
         if (c2.isEmpty())
             listString2 = "null";
-        return username + "," + password + "," + name + "," + listString1 + "," + listString2;
+        return getUsername() + "," + getPassword() + "," + name + "," + listString1 + "," + listString2;
     }
 }

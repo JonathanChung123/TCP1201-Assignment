@@ -8,17 +8,17 @@ public class User {
     /**
      * Represents the user's username
      */
-    protected String username;
+    private String username;
 
     /**
      * Represents the user's password
      */
-    protected String password;
+    private String password;
 
     /**
      * Represents the user's user type
      */
-    protected String userType;
+    private String userType;
 
     /**
      * The constructor initializes the user's information
@@ -31,4 +31,17 @@ public class User {
         this.password = password;
         this.userType = userType;
     }
+
+    public String getUsername(){
+        return username;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+
+    public String getuserType(){
+        return userType;
+    }
+
 }

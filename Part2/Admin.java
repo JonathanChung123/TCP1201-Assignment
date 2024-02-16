@@ -20,7 +20,7 @@ public class Admin extends User{
      * @return Returns the information into string format
      */
     public String toString(){
-        return username + ", " + password + ", " + userType;
+        return getUsername() + ", " + getPassword() + ", " + getuserType();
     }
 
     /**
@@ -29,6 +29,6 @@ public class Admin extends User{
      * username,password
      */
     public String toCSVString(){
-        return username + "," + password;
+        return getUsername() + "," + getPassword();
     }
 }

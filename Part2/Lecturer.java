@@ -10,12 +10,12 @@ public class Lecturer extends User{
     /**
      * Represents the name of the lecturer
      */
-    protected String name;
+    private String name;
 
     /**
      * Represents the course the lecturer is teaching
      */
-    protected ArrayList<Course> courses = new ArrayList<>();
+    private ArrayList<Course> courses = new ArrayList<>();
 
 
     /**
@@ -36,8 +36,8 @@ public class Lecturer extends User{
         }
     }
 
-    public String getUsername(){
-        return username;
+    public String getName(){
+        return name;
     }
 
     public void addCourses(Course course){
@@ -51,10 +51,10 @@ public class Lecturer extends User{
     public String toCSVString(){
         ArrayList<String> c = new ArrayList<>();
         for(Course course:courses)
-            c.add(course.courseName);
+            c.add(course.getCourseName());
         String listString = String.join(" ", c);
         if(c.isEmpty())
             listString = "null";
-        return username + "," + password + "," + name + "," + listString;
+        return getUsername() + "," + getPassword() + "," + name + "," + listString;
     }
 }
