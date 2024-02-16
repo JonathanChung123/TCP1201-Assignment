@@ -1,11 +1,31 @@
 import java.util.ArrayList;
 
+/**
+ * @author Jonathan Chung
+ * @version 1.0.0
+ */
+
 public class Lecturer extends User{
 
+    /**
+     * Represents the name of the lecturer
+     */
     protected String name;
+
+    /**
+     * Represents the course the lecturer is teaching
+     */
     protected ArrayList<Course> courses = new ArrayList<>();
 
 
+    /**
+     * 
+     * @param username username of the lecturer
+     * @param password password of the lecturer
+     * @param userType user type Lecturer
+     * @param name name of the lecturer
+     * @param courses courses of the lecturer
+     */
     public Lecturer(String username, String password, String userType, 
     String name, ArrayList<Course> courses){
         super(username,password,userType);

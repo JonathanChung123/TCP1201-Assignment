@@ -32,7 +32,7 @@ public class CertificateProgram extends Application {
     private static List<Map<String,String>> loginData = new ArrayList<>();
 
     //Initailization to for user login type
-    public static Lecturer lec_login = new Lecturer("","","lecturer"," ",null);
+    public static Lecturer lec_login = new Lecturer("","","lecturer","",null);
     public static Student stu_login = new Student("","","student","",null,null);
     public static Admin admin_login = new Admin("", "", "admin");
 
@@ -765,7 +765,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         // Iterate through the list of students
         for(Student student:students){
             System.out.println("Student Username: " + student.username);
-            System.out.println("Student Name: " + student.name);
+            System.out.println("Student Name: " + student.getName());
             ArrayList<Course> viewCourses = student.getCurrentCourses();
 
             // Check if student has course assigned 
@@ -843,7 +843,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         // Iterate through the list of students
         for(Student student:students){
             System.out.println("Student Username: " + student.username);
-            System.out.println("Student Name: " + student.name);
+            System.out.println("Student Name: " + student.getName());
             ArrayList<Course> courses = student.getCurrentCourses();
 
             // Check if student has course assigned 
@@ -890,6 +890,11 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         // Create the admin scene with the grid layout and set it to the stage
         Scene adminScene = new Scene(studentGrid, 600, 300);
         primaryStage.setScene(adminScene);
+
+        if(stu_login.getTotalCurrentCredit() < 3){
+            showAlert("Error", "Student must have a minimum of 3 credits per trimester. Please add a course");
+            assignStudentCourse();
+        }
     }
 
     private void assignStudentCourse() {
@@ -915,6 +920,12 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         // Wait for the user to click OK or Cancel in the dialog
         Optional<ButtonType> result = dialog.showAndWait();
 
+        //if credit lesser than 3
+        if(result.get() == ButtonType.CANCEL && stu_login.getTotalCurrentCredit() < 3){
+            showAlert("Error", "Student must have a minimum of 3 credits per trimester. Please add a course");
+            assignStudentCourse();
+        }
+
         // Process the result if OK is clicked
         if (result.isPresent() && result.get() == ButtonType.OK) {
             String courseName = courseField.getText().trim();
@@ -922,6 +933,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
             // Check if the course name is empty
             if (courseName.isEmpty()) {
                 showAlert("Error", "Course name cannot be empty. Please enter valid values.");
+                assignStudentCourse();
                 return;
             }
 
@@ -935,18 +947,21 @@ private static LinkedHashSet<Student> readStudentFromFile() {
                 if(stu_login.getCurrentCourses().contains(retrieveCourseData(selectedCourse))
                 || stu_login.getPrevCourses().contains(retrieveCourseData(selectedCourse))){
                     showAlert("Error", "Course already has been assigned to student");
+                    assignStudentCourse();
                     return;
                 }
 
                 //check if it is the maximum credit for the course
                 if((stu_login.getTotalCurrentCredit() + retrieveCourseData(selectedCourse).credit) > 12){
                     showAlert("Error", "Exceed maximum credit for trimester");
+                    assignStudentCourse();
                     return;
                 }
 
                 //check if there is course with required credit
                 if(retrieveCourseData(selectedCourse).reqCredit > stu_login.getTotalPrevCredit()){
                     showAlert("Error", "Required Credit not met");
+                    assignStudentCourse();
                     return;
                 }
 
@@ -957,6 +972,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
                         continue;
                     else{
                         showAlert("Error", "Required Pre-requisite subject not met");
+                        assignStudentCourse();
                         return;
                     }
                 }
@@ -970,6 +986,7 @@ private static LinkedHashSet<Student> readStudentFromFile() {
             } 
             else 
                 showAlert("Error","Course not found.");
+                assignStudentCourse();
                 return;
             
         }
