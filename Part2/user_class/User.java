@@ -1,7 +1,13 @@
+package user_class;
+
 /**
  * @author Ho Jie Le
  * @verison 1.0.0
  */
+
+/**
+  * The User class provides information of a user. It acts as a superclass.
+  */
 public class User {
 
     /**
@@ -51,7 +57,7 @@ public class User {
      * Get the user type of the user
      * @return The user type of the user in String
      */
-    public String getuserType(){
+    public String getUserType(){
         return userType;
     }
 
@@ -60,6 +66,6 @@ public class User {
      * @return username,password,userType in String
      */
     public String toCSVString(){
-        return getUsername() + "," + getPassword() + "," + getuserType();
+        return getUsername() + "," + getPassword() + "," + getUserType();
     }
 }

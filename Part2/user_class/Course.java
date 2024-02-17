@@ -1,3 +1,5 @@
+package user_class;
+
 import java.util.ArrayList;
 
 /**
@@ -64,8 +66,8 @@ public class Course {
     }
 
     /**
-     * Get the pre-requisite course to take the course
-     * @return The pre-requisite course to take the course in ArrayList<Course>
+     * Get the pre-requisite to take the course
+     * @return The pre-requisite course to take the course in ArrayList
      */
     public ArrayList<Course> getPreRequisiteCourse(){
         return preRequisiteCourse;

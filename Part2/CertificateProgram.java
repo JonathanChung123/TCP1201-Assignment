@@ -17,6 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import user_class.Admin;
+import user_class.Course;
+import user_class.Lecturer;
+import user_class.Student;
+
 // Main class representing the certificate program, extending Application
 public class CertificateProgram extends Application {
 
@@ -816,7 +821,6 @@ public class CertificateProgram extends Application {
     return null;
     }
 
-
     // Method to display a list of all students and lecturers
     private void viewAllStudentsAndLecturers() {
         // Create VBox layout to hold the content
@@ -891,11 +895,17 @@ public class CertificateProgram extends Application {
             layout.getChildren().add(lecturerBox);
         }
 
+        // Wrap the layout in a ScrollPane
+        ScrollPane scrollPane = new ScrollPane(layout);
+        scrollPane.setFitToWidth(true); // Allow horizontal scrolling if needed
+        scrollPane.setPrefViewportHeight(500); // Set preferred height
+        scrollPane.setMaxHeight(600); // Set maximum height
+
         // Display the information in an alert dialog
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("All Students and Lecturers");
         alert.setHeaderText(null);
-        alert.getDialogPane().setContent(layout);
+        alert.getDialogPane().setContent(scrollPane);
         alert.showAndWait();
     }
 
@@ -971,11 +981,17 @@ public class CertificateProgram extends Application {
             layout.getChildren().add(studentBox);
         }
 
+        // Wrap the layout in a ScrollPane
+        ScrollPane scrollPane = new ScrollPane(layout);
+        scrollPane.setFitToWidth(true); // Allow horizontal scrolling if needed
+        scrollPane.setPrefViewportHeight(500); // Set preferred height
+        scrollPane.setMaxHeight(600); // Set maximum height
+
         // Display the information in an alert dialog
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("All Students");
         alert.setHeaderText(null);
-        alert.getDialogPane().setContent(layout);
+        alert.getDialogPane().setContent(scrollPane);
         alert.showAndWait();
     }
 

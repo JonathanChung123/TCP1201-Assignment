@@ -1,3 +1,5 @@
+package user_class;
+
 import java.util.ArrayList;
 
 /**
@@ -68,7 +70,7 @@ public class Student extends User{
 
     /**
      * Get the current courses taken by the student
-     * @return The current courses taken by the student in ArrayList<Course>
+     * @return The current courses taken by the student in ArrayList
      */
     public ArrayList<Course> getCurrentCourses(){
         return currentCourses;
@@ -76,7 +78,7 @@ public class Student extends User{
 
     /**
      * Get the previous courses taken by the student
-     * @return The previous courses taken by the student in ArrayList<Course>
+     * @return The previous courses taken by the student in ArrayList
      */
     public ArrayList<Course> getPrevCourses(){
         return previousCourses;

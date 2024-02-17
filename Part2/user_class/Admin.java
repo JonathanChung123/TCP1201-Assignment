@@ -1,6 +1,8 @@
+package user_class;
+
 /**
  * @author Ho Jie Le
- * @verison 1.0.0
+ * @version 1.0.0
  */
 
 
@@ -25,7 +27,7 @@ public class Admin extends User{
      * @return username,password,userType in String
      */
     public String toString(){
-        return getUsername() + ", " + getPassword() + ", " + getuserType();
+        return getUsername() + ", " + getPassword() + ", " + getUserType();
     }
 
     /**

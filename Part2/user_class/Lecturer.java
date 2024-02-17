@@ -1,3 +1,5 @@
+package user_class;
+
 import java.util.ArrayList;
 
 /**
@@ -57,7 +59,7 @@ public class Lecturer extends User{
 
     /**
      * Get the courses of the lecturer
-     * @return The courses of the lecturer in ArrayList<Course>
+     * @return The courses of the lecturer in ArrayList
      */
     public ArrayList<Course> getCourses(){
         return courses;
