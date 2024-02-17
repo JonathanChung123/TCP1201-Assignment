@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -430,49 +431,55 @@ public class CertificateProgram extends Application {
         studentGrid.setHgap(10);
         studentGrid.setVgap(10);
         studentGrid.setPadding(new Insets(25, 25, 25, 25));
-
-        // Create labels, text fields, and a dialog for entering student information
+    
+        // Username input
         Label usernameLabel = new Label("Enter student username:");
         TextField usernameField = new TextField();
         studentGrid.add(usernameLabel, 0, 0);
         studentGrid.add(usernameField, 1, 0);
-
+    
+        // Password input
         Label passwordLabel = new Label("Enter student password:");
         PasswordField passwordField = new PasswordField();
         studentGrid.add(passwordLabel, 0, 1);
         studentGrid.add(passwordField, 1, 1);
-
-
-        
+    
+        // Full name input
+        Label fullNameLabel = new Label("Enter student full name:");
+        TextField fullNameField = new TextField();
+        studentGrid.add(fullNameLabel, 0, 2);
+        studentGrid.add(fullNameField, 1, 2);
+    
         // Create a dialog box for student creation
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Create Student");
         dialog.getDialogPane().setContent(studentGrid);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
+    
         // Wait for the user to click OK or Cancel in the dialog
         Optional<ButtonType> result = dialog.showAndWait();
-
+    
         // Process the result if OK is clicked
         if (result.isPresent() && result.get() == ButtonType.OK) {
             String username = usernameField.getText().trim();
             String password = passwordField.getText().trim();
-
-            // Check if username or password is empty
-            if (username.isEmpty() || password.isEmpty()) {
-                showAlert("Error", "Username or password cannot be empty. Please enter valid values.");
+            String fullName = fullNameField.getText().trim();
+    
+            // Check if any field is empty
+            if (username.isEmpty() || password.isEmpty() || fullName.isEmpty()) {
+                showAlert("Error", "All fields must be filled. Please enter valid values.");
                 return;
             }
-
+    
             // Check for duplicate username
             if (isUsernameExists(username)) {
                 showAlert("Error", "Username already exists. Please choose a different one.");
                 return;
             }
-
+    
             // Add the new student to the list of users
-            students.add(new Student(username, password, "Student", "", null, null));
-            student_subdata.put(username,password);
+            students.add(new Student(username, password, "Student", fullName, null, null));
+            student_subdata.put(username, password);
             saveStudentToFile(students);
             System.out.println("Student created successfully. Student Username: " + username);
         }
@@ -485,49 +492,58 @@ public class CertificateProgram extends Application {
         lecturerGrid.setHgap(10);
         lecturerGrid.setVgap(10);
         lecturerGrid.setPadding(new Insets(25, 25, 25, 25));
-
+    
+        // Full name input
+        Label fullNameLabel = new Label("Enter lecturer full name:");
+        TextField fullNameField = new TextField();
+        lecturerGrid.add(fullNameLabel, 0, 2);
+        lecturerGrid.add(fullNameField, 1, 2);
+    
         // Username input
         Label usernameLabel = new Label("Enter lecturer username:");
         TextField usernameField = new TextField();
         lecturerGrid.add(usernameLabel, 0, 0);
         lecturerGrid.add(usernameField, 1, 0);
-
+    
         // Password input
         Label passwordLabel = new Label("Enter lecturer password:");
         PasswordField passwordField = new PasswordField();
         lecturerGrid.add(passwordLabel, 0, 1);
         lecturerGrid.add(passwordField, 1, 1);
-
+    
         // Show the dialog
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Create Lecturer");
         dialog.getDialogPane().setContent(lecturerGrid);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
+    
         // Wait for the user to click OK or Cancel
         Optional<ButtonType> result = dialog.showAndWait();
-
+    
         // Process the result if OK is clicked
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // Retrieve the entered username and password
+            // Retrieve the entered full name, username, and password
+            String fullName = fullNameField.getText().trim();
             String username = usernameField.getText().trim();
             String password = passwordField.getText().trim();
-
-            // Check if username or password is empty
-            if (username.isEmpty() || password.isEmpty()) {
-                showAlert("Error", "Username or password cannot be empty. Please enter valid values.");
+    
+            // Check if any field is empty
+            if (fullName.isEmpty() || username.isEmpty() || password.isEmpty()) {
+                showAlert("Error", "All fields must be filled. Please enter valid values.");
+                createLecturer();
                 return;
             }
-
+    
             // Check for duplicate username
             if (isUsernameExists(username)) {
                 showAlert("Error", "Username already exists. Please choose a different one.");
+                createLecturer();
                 return;
             }
-
+    
             // Add the new lecturer to the list of users
-            lecturers.add(new Lecturer(username, password, "lecturer","",null));
-            lecturer_subdata.put(username,password);
+            lecturers.add(new Lecturer(username, password, "lecturer", fullName, null));
+            lecturer_subdata.put(username, password);
             saveLecturerToFile(lecturers);
             System.out.println("Lecturer created successfully. Lecturer Username: " + username);
         }
@@ -594,12 +610,14 @@ public class CertificateProgram extends Application {
             // Check for duplicate course name
             if (isCourseNameExists(courseName)) {
                 showAlert("Error", "Course with this name already exists. Please choose a different name.");
+                createCourse();
                 return;
             }
 
             //check if credit is all integers
             if (!isInteger(credit)){
                 showAlert("Error","Credit is not an integer value");
+                createCourse();
                 return;
             }
 
@@ -610,6 +628,7 @@ public class CertificateProgram extends Application {
                 for(String i:items){
                     if(!isCourseNameExists(i)){
                         showAlert("Error", "Course doesn't exist, Pre-requisite course doesn't exist");
+                        createCourse();
                         return;
                     }
                 }
@@ -695,6 +714,14 @@ public class CertificateProgram extends Application {
             // Check if the course name or lecturer username is empty
             if (courseName.isEmpty() || lecturer.isEmpty()) {
                 showAlert("Error", "Course name or lecturer username cannot be empty. Please enter valid values.");
+                assignCourseToLecturer();
+                return;
+            }
+
+            //Check if field entered is equal "null"
+            if (courseName == "null" || lecturer == "null"){
+                showAlert("Error", "Course name or lecturer username cannot be null.");
+                assignCourseToLecturer();
                 return;
             }
 
@@ -708,6 +735,7 @@ public class CertificateProgram extends Application {
                 // Check if the lecturer username exists
                 if (!isUsernameExists(lecturer) && getUserType(lecturer).equals("lecturer")) {
                     showAlert("Error", "Lecturer username does not exist. Please enter a valid username.");
+                    assignCourseToLecturer();
                     return;
                 }
                 
@@ -715,6 +743,7 @@ public class CertificateProgram extends Application {
                 Lecturer selected_lec = retrieveLecturerData(lecturer);
                 if(selected_lec.getCourses().contains(retrieveCourseData(selectedCourse))){
                     showAlert("Error", "Lecturer is already assigned to course");
+                    assignCourseToLecturer();
                     return;
                 }
 
@@ -726,10 +755,11 @@ public class CertificateProgram extends Application {
                 System.out.println("Lecturer: " + lecturer);
                 System.out.println("Course: " + courseName);
             } 
-            else 
-                System.out.println("Course not found.");
+            else{
+                showAlert("Error", "Course not found");
+                assignCourseToLecturer();
                 return;
-            
+            }
         }
     }
 
@@ -787,52 +817,86 @@ public class CertificateProgram extends Application {
     }
 
 
-    // Method to print a list of all students and lecturers
+    // Method to display a list of all students and lecturers
     private void viewAllStudentsAndLecturers() {
-        System.out.println("\nAll Students and Lecturers:");
+        // Create VBox layout to hold the content
+        VBox layout = new VBox();
+        layout.setSpacing(10);
+        layout.setPadding(new Insets(20));
+
+        // Add a title label
+        Label titleLabel = new Label("All Students and Lecturers:");
+        titleLabel.setStyle("-fx-font-size: 16pt; -fx-font-weight: bold;");
+        layout.getChildren().add(titleLabel);
 
         // Iterate through the list of students
-        for(Student student:students){
-            System.out.println("Student Username: " + student.getUsername());
-            System.out.println("Student Name: " + student.getName());
+        for (Student student : students) {
+            VBox studentBox = new VBox();
+            studentBox.setSpacing(5);
+
+            // Add student username and name labels
+            studentBox.getChildren().addAll(new Label("Student Username: " + student.getUsername()),
+                                            new Label("Student Name: " + student.getName()));
+
+            // Check if student has courses assigned
             ArrayList<Course> viewCourses = student.getCurrentCourses();
+            if (!viewCourses.isEmpty()) {
+                VBox coursesBox = new VBox();
+                coursesBox.setSpacing(3);
 
-            // Check if student has course assigned 
-            if(!viewCourses.isEmpty()){
-                System.out.print("  Assigned Course: ");
-                
-                //Iterate through lecturer's courses
-                for(Course course:viewCourses){
-                    System.out.print(course.getCourseName() + " ");
-                    
+                // Add assigned courses labels
+                Label coursesLabel = new Label("Assigned Courses:");
+                coursesLabel.setStyle("-fx-font-weight: bold;");
+                coursesBox.getChildren().add(coursesLabel);
+                for (Course course : viewCourses) {
+                    coursesBox.getChildren().add(new Label("- " + course.getCourseName()));
                 }
-                viewCourses = new ArrayList<>();
-                System.out.println();
+
+                studentBox.getChildren().add(coursesBox);
             }
 
+            // Add a separator between students
+            studentBox.getChildren().add(new Label("----------------------------"));
+            layout.getChildren().add(studentBox);
         }
+
         // Iterate through the list of lecturers
-        for(Lecturer lecturer:lecturers){
-            System.out.println("Lecturer Username: " + lecturer.getUsername());
-            System.out.println("Lecturer Name: " + lecturer.getName());
+        for (Lecturer lecturer : lecturers) {
+            VBox lecturerBox = new VBox();
+            lecturerBox.setSpacing(5);
+
+            // Add lecturer username and name labels
+            lecturerBox.getChildren().addAll(new Label("Lecturer Username: " + lecturer.getUsername()),
+                                            new Label("Lecturer Name: " + lecturer.getName()));
+
+            // Check if lecturer has courses assigned
             ArrayList<Course> viewCourses = lecturer.getCourses();
+            if (!viewCourses.isEmpty()) {
+                VBox coursesBox = new VBox();
+                coursesBox.setSpacing(3);
 
-            // Check if lecturer has course assigned 
-            if(!viewCourses.isEmpty()){
-                System.out.print("  Assigned Course: ");
-            
-
-                //Iterate through lecturer's courses
-                for(Course course:viewCourses){
-                    System.out.print(course.getCourseName() + " ");
-                    
+                // Add assigned courses labels
+                Label coursesLabel = new Label("Assigned Courses:");
+                coursesLabel.setStyle("-fx-font-weight: bold;");
+                coursesBox.getChildren().add(coursesLabel);
+                for (Course course : viewCourses) {
+                    coursesBox.getChildren().add(new Label("- " + course.getCourseName()));
                 }
-                viewCourses = new ArrayList<>();
-                System.out.println();
+
+                lecturerBox.getChildren().add(coursesBox);
             }
-            
+
+            // Add a separator between lecturers
+            lecturerBox.getChildren().add(new Label("----------------------------"));
+            layout.getChildren().add(lecturerBox);
         }
-        
+
+        // Display the information in an alert dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("All Students and Lecturers");
+        alert.setHeaderText(null);
+        alert.getDialogPane().setContent(layout);
+        alert.showAndWait();
     }
 
     private void showLecturerMenu(Stage primaryStage) {
@@ -866,29 +930,54 @@ public class CertificateProgram extends Application {
         primaryStage.setScene(adminScene);
     }
 
+    // Method to display all students and their assigned courses in the GUI
     private void viewAllStudents() {
-        System.out.println("\nAll Students:");
+        // Create VBox layout to hold the content
+        VBox layout = new VBox();
+        layout.setSpacing(10);
+        layout.setPadding(new Insets(20));
+
+        // Add a label for all students
+        Label titleLabel = new Label("All Students:");
+        titleLabel.setStyle("-fx-font-size: 16pt; -fx-font-weight: bold;");
+        layout.getChildren().add(titleLabel);
 
         // Iterate through the list of students
-        for(Student student:students){
-            System.out.println("Student Username: " + student.getUsername());
-            System.out.println("Student Name: " + student.getName());
-            ArrayList<Course> courses = student.getCurrentCourses();
+        for (Student student : students) {
+            VBox studentBox = new VBox();
+            studentBox.setSpacing(5);
 
-            // Check if student has course assigned 
-            if(!courses.isEmpty()){
-                System.out.print("  Assigned Course: ");
-                
-                //Iterate through lecturer's courses
-                for(Course course:courses){
-                    System.out.print(course.getCourseName() + " ");
-                    
+            // Add student username and name labels
+            studentBox.getChildren().addAll(new Label("Student Username: " + student.getUsername()),
+                                            new Label("Student Name: " + student.getName()));
+
+            // Check if student has courses assigned
+            ArrayList<Course> courses = student.getCurrentCourses();
+            if (!courses.isEmpty()) {
+                VBox coursesBox = new VBox();
+                coursesBox.setSpacing(3);
+
+                // Add assigned courses labels
+                Label coursesLabel = new Label("Assigned Courses:");
+                coursesLabel.setStyle("-fx-font-weight: bold;");
+                coursesBox.getChildren().add(coursesLabel);
+                for (Course course : courses) {
+                    coursesBox.getChildren().add(new Label("- " + course.getCourseName()));
                 }
-                courses = new ArrayList<>();
-                System.out.println();
+
+                studentBox.getChildren().add(coursesBox);
             }
+
+            layout.getChildren().add(studentBox);
+        }
+
+        // Display the information in an alert dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("All Students");
+        alert.setHeaderText(null);
+        alert.getDialogPane().setContent(layout);
+        alert.showAndWait();
     }
-}
 
 
     private void showStudentMenu(Stage primaryStage) {
@@ -906,24 +995,80 @@ public class CertificateProgram extends Application {
 
         // Create buttons for various student actions
         Button courseRegisterButton = new Button("Register Course");
+        Button viewCourseButton = new Button("View Course"); // Added button for viewing courses
         Button logoutButton = new Button("Logout");
 
         // Add buttons to the student grid layout
         studentGrid.add(courseRegisterButton, 0, 0);
-        studentGrid.add(logoutButton, 1, 0);
+        studentGrid.add(viewCourseButton, 1, 0); // Added view course button
+        studentGrid.add(logoutButton, 2, 0); // Adjusted grid positions
 
         // Set actions for student buttons
         courseRegisterButton.setOnAction(e -> assignStudentCourse());
+        viewCourseButton.setOnAction(e -> viewCourses()); // Set action for view course button
         logoutButton.setOnAction(e -> start(primaryStage));
 
         // Create the admin scene with the grid layout and set it to the stage
-        Scene adminScene = new Scene(studentGrid, 600, 300);
+        Scene adminScene = new Scene(studentGrid, 800, 600); // Adjusted scene size
         primaryStage.setScene(adminScene);
 
         if(stu_login.getTotalCurrentCredit() < 3){
             showAlert("Error", "Student must have a minimum of 3 credits per trimester. Please add a course");
             assignStudentCourse();
         }
+    }
+
+    // Method to display a student's courses in the GUI
+    private void viewCourses() {
+        // Get current, previous, and future courses of the student
+        ArrayList<Course> currentCourses = stu_login.getCurrentCourses();
+        ArrayList<Course> previousCourses = stu_login.getPrevCourses();
+        // Assuming future courses can be retrieved from another method or class
+        ArrayList<Course> futureCourses = getFutureCourses();
+
+        // Create VBox layout to hold the content
+        VBox layout = new VBox();
+        layout.setSpacing(10); // Set spacing between nodes
+        layout.setPadding(new Insets(20)); // Set padding around the layout
+
+        // Add labels for current courses
+        Label currentLabel = new Label("Current Courses:");
+        layout.getChildren().add(currentLabel);
+        for (Course course : currentCourses) {
+            layout.getChildren().add(new Label(course.toString()));
+        }
+
+        // Add labels for previous courses
+        Label previousLabel = new Label("Previous Courses:");
+        layout.getChildren().add(previousLabel);
+        for (Course course : previousCourses) {
+            layout.getChildren().add(new Label(course.toString()));
+        }
+
+        // Add labels for future courses
+        Label futureLabel = new Label("Future Courses:");
+        layout.getChildren().add(futureLabel);
+        for (Course course : futureCourses) {
+            layout.getChildren().add(new Label(course.toString()));
+        }
+
+        // Display the information in an alert dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("View Courses");
+        alert.setHeaderText(null);
+        alert.getDialogPane().setContent(layout);
+        alert.showAndWait();
+    }
+
+    public ArrayList<Course> getFutureCourses(){
+        ArrayList<Course> futureCourses = new ArrayList<>();
+        for(Course course:courses){
+            if (stu_login.getPrevCourses().contains(course) || stu_login.getCurrentCourses().contains(course))
+                continue;
+            else
+                futureCourses.add(course);
+        }
+        return futureCourses;
     }
 
     private void assignStudentCourse() {
@@ -963,6 +1108,13 @@ public class CertificateProgram extends Application {
             if (courseName.isEmpty()) {
                 showAlert("Error", "Course name cannot be empty. Please enter valid values.");
                 assignStudentCourse();
+                return;
+            }
+
+            //Check if field entered is equal "null"
+            if (courseName == "null"){
+                showAlert("Error", "Course name cannot be null.");
+                assignCourseToLecturer();
                 return;
             }
 
@@ -1013,11 +1165,11 @@ public class CertificateProgram extends Application {
                 System.out.println("Course assigned to student successfully.");
                 System.out.println("Course: " + courseName);
             } 
-            else 
+            else{
                 showAlert("Error","Course not found.");
                 assignStudentCourse();
                 return;
-            
+            }
         }
     }
 

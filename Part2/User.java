@@ -2,10 +2,6 @@
  * @author Ho Jie Le
  * @verison 1.0.0
  */
-
-/**
-  * The User class provides information of a user. It acts as a superclass.
-  */
 public class User {
 
     /**

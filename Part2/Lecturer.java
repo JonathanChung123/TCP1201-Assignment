@@ -21,7 +21,6 @@ public class Lecturer extends User{
      */
     private ArrayList<Course> courses = new ArrayList<>();
 
-
     /**
      * The constructor initializes the lecturer's information
      * @param username username of the lecturer
@@ -68,7 +67,6 @@ public class Lecturer extends User{
      * Returns the information into CSV format
      * @return username,password,name,courses in String
      */
-    @Override
     public String toCSVString(){
         ArrayList<String> c = new ArrayList<>();
         for(Course course:courses)

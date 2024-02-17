@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * @author Jonathan Chung
+ * @author Jonathan Chung, Ho Jie Le
  * @version 1.0.0
  */
 
@@ -77,6 +77,14 @@ public class Course {
      */
     public Integer getReqCredit(){
         return reqCredit;
+    }
+
+    /**
+     * Returns the information into toString format
+     * @return "Course name: courseName, Credit: credit" in String
+     */
+    public String toString() {
+        return "Course Name: " + courseName + ", Credit: " + credit;
     }
 
     /**
