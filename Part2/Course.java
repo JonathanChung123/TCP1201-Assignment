@@ -5,7 +5,11 @@ import java.util.ArrayList;
  * @version 1.0.0
  */
 
+/**
+  * The Course class provides information of a course. It can store and provide relevant data.
+  */
 public class Course {
+
     /**
      * Represents the name of the course
      */
@@ -43,26 +47,41 @@ public class Course {
         this.reqCredit = reqCredit;
     }
 
+    /**
+     * Get the name of the course
+     * @return The name of the course in String
+     */
     public String getCourseName(){
         return courseName;
     }
 
+    /**
+     * Get the credit of the course
+     * @return The credit of the course in Integer
+     */
     public Integer getCredit(){
         return credit;
     }
 
+    /**
+     * Get the pre-requisite course to take the course
+     * @return The pre-requisite course to take the course in ArrayList<Course>
+     */
     public ArrayList<Course> getPreRequisiteCourse(){
         return preRequisiteCourse;
     }
 
+    /**
+     * Get the credits required to take the course
+     * @return The credits required to take the course in Integer
+     */
     public Integer getReqCredit(){
         return reqCredit;
     }
 
     /**
-     * 
-     * @return Returns the information into CSV format: 
-     * courseName,credit,preRequisiteCourse,reqCredit
+     * Returns the information into CSV format
+     * @return courseName,credit,preRequisiteCourse,reqCredit in String
      */
     public String toCSVString(){
         ArrayList<String> c = new ArrayList<>();

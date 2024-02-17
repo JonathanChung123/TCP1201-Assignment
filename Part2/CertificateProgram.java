@@ -36,7 +36,10 @@ public class CertificateProgram extends Application {
     public static Student stu_login = new Student("","","student","",null,null);
     public static Admin admin_login = new Admin("", "", "admin");
 
-    // Main method to launch the JavaFX application
+    /**
+     * Main method to launch the JavaFX application and read from CSV files
+     * @param args
+     */
     public static void main(String[] args) {
         //initialization from csv files
         admins = readAdminFromFile();
@@ -52,6 +55,11 @@ public class CertificateProgram extends Application {
         launch(args);
     }
 
+    /**
+     * Get the data from admins.csv into the system
+     * @return A LinkedHashSet<Admin> with the data taken from .csv file
+     * @throws IOException When fail to read/write the file
+     */
     private static LinkedHashSet<Admin> readAdminFromFile() {
         String filename = "admins.csv";
         LinkedHashSet<Admin> admins = new LinkedHashSet<Admin>();
@@ -72,166 +80,184 @@ public class CertificateProgram extends Application {
         return admins;
     }
 
+    /**
+     * Get the data from courses.csv into the system
+     * @return A LinkedHashSet<Course> with the data taken from .csv file
+     * @throws IOException When fail to read/write the file
+     */
     private static LinkedHashSet<Course> readCourseFromFile() {
-    String filename = "courses.csv";
-    LinkedHashSet<Course> courses = new LinkedHashSet<Course>();
-    try {
-        // read students.csv into a list of lines.
-        List<String> lines = Files.readAllLines(Paths.get(filename));
-        for (int i = 0; i < lines.size(); i++) {
-        // split a line by comma
-        String[] items = lines.get(i).split(",");
-        
-        //Create a List with Type Course
-        ArrayList<Course> preReqCourseList = new ArrayList<>();
-        //If the pre-Requisite is not labeled as null
-        if(!(items[2].equals("null"))){
-            //course is a list that split at " " if there's multiple pre-Requisite
-            String[] course = items[2].split(" ");
-            Course preReqCourse = null; //basically will store the Course data that will be pre-Requisite for the current course
-            for(String courseName:course){
+        String filename = "courses.csv";
+        LinkedHashSet<Course> courses = new LinkedHashSet<Course>();
+        try {
+            // read students.csv into a list of lines.
+            List<String> lines = Files.readAllLines(Paths.get(filename));
+            for (int i = 0; i < lines.size(); i++) {
+            // split a line by comma
+            String[] items = lines.get(i).split(",");
+            
+            //Create a List with Type Course
+            ArrayList<Course> preReqCourseList = new ArrayList<>();
+            //If the pre-Requisite is not labeled as null
+            if(!(items[2].equals("null"))){
+                //course is a list that split at " " if there's multiple pre-Requisite
+                String[] course = items[2].split(" ");
+                Course preReqCourse = null; //basically will store the Course data that will be pre-Requisite for the current course
+                for(String courseName:course){
 
-                //get the Course class
-                for(Course x:courses){
-                    if(x.getCourseName().equals(courseName)){
-                        preReqCourse = x;
-                        break;
+                    //get the Course class
+                    for(Course x:courses){
+                        if(x.getCourseName().equals(courseName)){
+                            preReqCourse = x;
+                            break;
+                        }
                     }
-                }
-                //if fail to get Course data
-                if (preReqCourse == null){
-                    return null;
-                }
-
-                //add the Course into the list of Pre-Requisite Courses
-                
-                preReqCourseList.add(preReqCourse);
-            }
-        }
-        //add the course to courses
-        courses.add(new Course(items[0], Integer.parseInt(items[1]), preReqCourseList, Integer.parseInt(items[3])));
-    }
-    } catch (IOException ex) {
-        System.out.println(ex.getMessage());
-    }
-    return courses;
-}
-
-private static LinkedHashSet<Lecturer> readLecturerFromFile() {
-    String filename = "lecturers.csv";
-    LinkedHashSet<Lecturer> lecturers = new LinkedHashSet<Lecturer>();
-    try {
-        // read students.csv into a list of lines.
-        List<String> lines = Files.readAllLines(Paths.get(filename));
-        for (int i = 0; i < lines.size(); i++) {
-        // split a line by comma
-        String[] items = lines.get(i).split(",");
-
-        //Create a List with Type Course
-        ArrayList<Course> CourseList = new ArrayList<>();
-        //If the course is not labeled as null
-        if(!(items[3].equals("null"))){
-            //course is a list that split at " " if there's multiple courses
-            String[] course = items[3].split(" ");
-            Course lecCourse = null; //basically will store the Course data that the lecturer has
-            for(String courseName:course){
-
-                //get the Course class
-                for(Course x:courses){
-                    if(x.getCourseName().equals(courseName)){
-                        lecCourse = x;
-                        break;
+                    //if fail to get Course data
+                    if (preReqCourse == null){
+                        return null;
                     }
+
+                    //add the Course into the list of Pre-Requisite Courses
+                    
+                    preReqCourseList.add(preReqCourse);
                 }
-                //if fail to get Course data
-                if (lecCourse == null){
-                    return null;
-                }
-                //add the Course into the list of Pre-Requisite Courses
-                CourseList.add(lecCourse);
             }
+            //add the course to courses
+            courses.add(new Course(items[0], Integer.parseInt(items[1]), preReqCourseList, Integer.parseInt(items[3])));
         }
-        //add the lecturer to lecturers
-        lecturers.add(new Lecturer(items[0], items[1], "lecturer", items[2], CourseList));
-        lecturer_subdata.put(items[0], items[1]);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return courses;
     }
-    } catch (IOException ex) {
-        System.out.println(ex.getMessage());
-    }
-    return lecturers;
-}
 
-private static LinkedHashSet<Student> readStudentFromFile() {
-    String filename = "students.csv";
-    LinkedHashSet<Student> students = new LinkedHashSet<Student>();
-    try {
-        // read students.csv into a list of lines.
-        List<String> lines = Files.readAllLines(Paths.get(filename));
-        for (int i = 0; i < lines.size(); i++) {
-        // split a line by comma
-        String[] items = lines.get(i).split(",");
+    /**
+     * Get the data from lecturers.csv into the system
+     * @return A LinkedHashSet<Lecturer> with the data taken from .csv file
+     * @throws IOException When fail to read/write the file
+     */
+    private static LinkedHashSet<Lecturer> readLecturerFromFile() {
+        String filename = "lecturers.csv";
+        LinkedHashSet<Lecturer> lecturers = new LinkedHashSet<Lecturer>();
+        try {
+            // read students.csv into a list of lines.
+            List<String> lines = Files.readAllLines(Paths.get(filename));
+            for (int i = 0; i < lines.size(); i++) {
+            // split a line by comma
+            String[] items = lines.get(i).split(",");
 
-        //Create a List with Type Course
-        ArrayList<Course> preCourseList = new ArrayList<>();
-        //If the course is not labeled as null
-        if(!(items[3].equals("null"))){
-            //course is a list that split at " " if there's multiple courses
-            String[] course = items[3].split(" ");
-            Course preCourse = null; //basically will store the Course data that the lecturer has
-            for(String courseName:course){
+            //Create a List with Type Course
+            ArrayList<Course> CourseList = new ArrayList<>();
+            //If the course is not labeled as null
+            if(!(items[3].equals("null"))){
+                //course is a list that split at " " if there's multiple courses
+                String[] course = items[3].split(" ");
+                Course lecCourse = null; //basically will store the Course data that the lecturer has
+                for(String courseName:course){
 
-                //get the Course class
-                for(Course x:courses){
-                    if(x.getCourseName().equals(courseName)){
-                        preCourse = x;
-                        break;
+                    //get the Course class
+                    for(Course x:courses){
+                        if(x.getCourseName().equals(courseName)){
+                            lecCourse = x;
+                            break;
+                        }
                     }
-                }
-                //if fail to get Course data
-                if (preCourse == null){
-                    return null;
-                }
-                //add the Course into the list of Pre-Requisite Courses
-                preCourseList.add(preCourse);
-            }
-        }
-
-        //Create a List with Type Course
-        ArrayList<Course> currCourseList = new ArrayList<>();
-        //If the course is not labeled as null
-        if(!(items[4].equals("null"))){
-            //course is a list that split at " " if there's multiple courses
-            String[] course = items[4].split(" ");
-            Course currCourse = null; //basically will store the Course data that the lecturer has
-            for(String courseName:course){
-
-                //get the Course class
-                for(Course x:courses){
-                    if(x.getCourseName().equals(courseName)){
-                        currCourse = x;
-                        break;
+                    //if fail to get Course data
+                    if (lecCourse == null){
+                        return null;
                     }
+                    //add the Course into the list of Pre-Requisite Courses
+                    CourseList.add(lecCourse);
                 }
-                //if fail to get Course data
-                if (currCourse == null){
-                    return null;
-                }
-                //add the Course into the list of Pre-Requisite Courses
-                currCourseList.add(currCourse);
             }
+            //add the lecturer to lecturers
+            lecturers.add(new Lecturer(items[0], items[1], "lecturer", items[2], CourseList));
+            lecturer_subdata.put(items[0], items[1]);
         }
-
-        //add the lecturer to lecturers
-        students.add(new Student(items[0], items[1], "student", items[2], preCourseList, currCourseList));
-        student_subdata.put(items[0], items[1]);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return lecturers;
     }
-    } catch (IOException ex) {
-        System.out.println(ex.getMessage());
-    }
-    return students;
-}
 
-    // Override method to define the initial stage (window) of the application
+    /**
+     * Get the data from students.csv into the system
+     * @return A LinkedHashSet<Student> with the data taken from .csv file
+     * @throws IOException When fail to read/write the file
+     */
+    private static LinkedHashSet<Student> readStudentFromFile() {
+        String filename = "students.csv";
+        LinkedHashSet<Student> students = new LinkedHashSet<Student>();
+        try {
+            // read students.csv into a list of lines.
+            List<String> lines = Files.readAllLines(Paths.get(filename));
+            for (int i = 0; i < lines.size(); i++) {
+            // split a line by comma
+            String[] items = lines.get(i).split(",");
+
+            //Create a List with Type Course
+            ArrayList<Course> preCourseList = new ArrayList<>();
+            //If the course is not labeled as null
+            if(!(items[3].equals("null"))){
+                //course is a list that split at " " if there's multiple courses
+                String[] course = items[3].split(" ");
+                Course preCourse = null; //basically will store the Course data that the lecturer has
+                for(String courseName:course){
+
+                    //get the Course class
+                    for(Course x:courses){
+                        if(x.getCourseName().equals(courseName)){
+                            preCourse = x;
+                            break;
+                        }
+                    }
+                    //if fail to get Course data
+                    if (preCourse == null){
+                        return null;
+                    }
+                    //add the Course into the list of Pre-Requisite Courses
+                    preCourseList.add(preCourse);
+                }
+            }
+
+            //Create a List with Type Course
+            ArrayList<Course> currCourseList = new ArrayList<>();
+            //If the course is not labeled as null
+            if(!(items[4].equals("null"))){
+                //course is a list that split at " " if there's multiple courses
+                String[] course = items[4].split(" ");
+                Course currCourse = null; //basically will store the Course data that the lecturer has
+                for(String courseName:course){
+
+                    //get the Course class
+                    for(Course x:courses){
+                        if(x.getCourseName().equals(courseName)){
+                            currCourse = x;
+                            break;
+                        }
+                    }
+                    //if fail to get Course data
+                    if (currCourse == null){
+                        return null;
+                    }
+                    //add the Course into the list of Pre-Requisite Courses
+                    currCourseList.add(currCourse);
+                }
+            }
+
+            //add the lecturer to lecturers
+            students.add(new Student(items[0], items[1], "student", items[2], preCourseList, currCourseList));
+            student_subdata.put(items[0], items[1]);
+        }
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return students;
+    }
+
+    /**
+     * Override method to define the initial stage (window) of the application
+     * 
+     */
     // @Override
     public void start(Stage primaryStage) {
         // Set the title of the main stage
@@ -271,7 +297,10 @@ private static LinkedHashSet<Student> readStudentFromFile() {
         primaryStage.show();
     }
 
-    // Method to handle the login screen
+    /**
+     * Method to handle the login screen
+     * @param primaryStage
+     */
     private void login(Stage primaryStage) {
         // Create a grid layout for the login screen
         GridPane loginGrid = new GridPane();

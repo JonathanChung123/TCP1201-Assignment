@@ -3,6 +3,9 @@
  * @verison 1.0.0
  */
 
+/**
+  * The User class provides information of a user. It acts as a superclass.
+  */
 public class User {
 
     /**
@@ -32,16 +35,35 @@ public class User {
         this.userType = userType;
     }
 
+    /**
+     * Get the username of the user
+     * @return The username of the user in String
+     */
     public String getUsername(){
         return username;
     }
 
+    /**
+     * Get the password of the user
+     * @return The password of the user in String
+     */
     public String getPassword(){
         return password;
     }
 
+    /**
+     * Get the user type of the user
+     * @return The user type of the user in String
+     */
     public String getuserType(){
         return userType;
     }
 
+    /**
+     * Returns the information into CSV format
+     * @return username,password,userType in String
+     */
+    public String toCSVString(){
+        return getUsername() + "," + getPassword() + "," + getuserType();
+    }
 }

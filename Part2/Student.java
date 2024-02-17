@@ -5,7 +5,13 @@ import java.util.ArrayList;
  * @version 1.0.0
  */
 
+
+/**
+  * The Student class provides information of a student. It can store and provide relevant data.
+  * The Student class extends the User class
+  */
 public class Student extends User{
+
     /**
      * Represents the name of the student
      */
@@ -44,36 +50,41 @@ public class Student extends User{
         }
     }
 
+    /**
+     * Get the name of the student
+     * @return The name of the student in String
+     */
     public String getName(){
         return name;
     }
+
     /**
      * Add a course to currentCourses
-     * @param course The course to add to the current courses the student is taking
+     * @param course is type Course, to add a course into the student
      */
     public void addCourses(Course course){
         currentCourses.add(course);
     }
 
     /**
-     * 
-     * @return Returns the current courses taken by the student
+     * Get the current courses taken by the student
+     * @return The current courses taken by the student in ArrayList<Course>
      */
     public ArrayList<Course> getCurrentCourses(){
         return currentCourses;
     }
 
     /**
-     * 
-     * @return Returns the previous courses taken by the student
+     * Get the previous courses taken by the student
+     * @return The previous courses taken by the student in ArrayList<Course>
      */
     public ArrayList<Course> getPrevCourses(){
         return previousCourses;
     }
 
     /**
-     * 
-     * @return Returns the total credit of previous courses
+     * Get the total credit of the courses of previous triemesters
+     * @return The total credit of previous courses in Integer
      */
     public Integer getTotalPrevCredit(){
         Integer totalCredit = 0;
@@ -83,8 +94,8 @@ public class Student extends User{
     }
 
     /**
-     * 
-     * @return Returns the total credit of current courses
+     * Gets the total credit of the courses of current triemester
+     * @return The total credit of current courses in Integer
      */
     public Integer getTotalCurrentCredit(){
         Integer totalCredit = 0;
@@ -94,10 +105,10 @@ public class Student extends User{
     }
     
     /**
-     * 
-     * @return Returns the information into CSV format: 
-     * username,password,name,previousCourses,currentCourses
+     * Returns the information into CSV format
+     * @return username,password,name,previousCourses,currentCourses in String
      */
+    @Override
     public String toCSVString(){
         ArrayList<String> c1 = new ArrayList<>();
         for(Course course:previousCourses)

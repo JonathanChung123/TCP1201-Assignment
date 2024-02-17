@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"<Unnamed>","c":"User","l":"getPassword()"},{"p":"<Unnamed>","c":"User","l":"getUsername()"},{"p":"<Unnamed>","c":"User","l":"getuserType()"},{"p":"<Unnamed>","c":"User","l":"toCSVString()"}];updateSearchResults();

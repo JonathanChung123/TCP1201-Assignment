@@ -3,8 +3,13 @@
  * @verison 1.0.0
  */
 
+
+/**
+  * The Admin class provides information of an admin. It can store and provide relevant data.
+  * The Admin class extends the User class
+  */
 public class Admin extends User{
-    
+
     /**
      * The constructor initializes the admin's information
      * @param username username of the admin
@@ -16,18 +21,18 @@ public class Admin extends User{
     }
 
     /**
-     * 
-     * @return Returns the information into string format
+     * Returns the information in toString format
+     * @return username,password,userType in String
      */
     public String toString(){
         return getUsername() + ", " + getPassword() + ", " + getuserType();
     }
 
     /**
-     * 
-     * @return Returns the information into CSV format: 
-     * username,password
+     * Returns the information into CSV format
+     * @return username,password in String
      */
+    @Override
     public String toCSVString(){
         return getUsername() + "," + getPassword();
     }
